@@ -1,6 +1,7 @@
-import pytest
+import json
 
 import pandas as pd
+import pytest
 
 
 @pytest.fixture()
@@ -55,8 +56,13 @@ def empty_df():
 def top_5():
     df = pd.DataFrame(
         {
-            "Дата операции": ["31.12.2021  16:44:00", "31.12.2021  16:42:04", "31.12.2020  16:42:04",
-                              "31.12.2019  16:42:04", "31.12.2018  16:42:04"],
+            "Дата операции": [
+                "31.12.2021  16:44:00",
+                "31.12.2021  16:42:04",
+                "31.12.2020  16:42:04",
+                "31.12.2019  16:42:04",
+                "31.12.2018  16:42:04",
+            ],
             "Дата платежа": ["31.12.2021", "31.12.2021", "31.12.2020", "31.12.2019", "31.12.2018"],
             "Номер карты": ["*7197", "*7197", "*7851", "*7851", "*4521"],
             "Статус": ["OK", "OK", "OK", "OK", "OK"],
@@ -78,39 +84,149 @@ def top_5():
 
 @pytest.fixture()
 def moex_response():
-    response = {'aggregates': {
-        'metadata': {'market_name': {'type': 'string',
-                                     'bytes': 45,
-                                     'max_size': 0},
-                     'market_title': {'type': 'string',
-                                      'bytes': 765,
-                                      'max_size': 0},
-                     'engine': {'type': 'string',
-                                'bytes': 45,
-                                'max_size': 0},
-                     'tradedate': {'type': 'date',
-                                   'bytes': 10,
-                                   'max_size': 0},
-                     'secid': {'type': 'string',
-                               'bytes': 36,
-                               'max_size': 0},
-                     'value': {'type': 'double'},
-                     'volume': {'type': 'int64'},
-                     'numtrades': {'type': 'int64'},
-                     'updated_at': {'type': 'datetime',
-                                    'bytes': 19,
-                                    'max_size': 0}},
-        'columns': ['market_name', 'market_title', 'engine', 'tradedate', 'secid', 'value', 'volume', 'numtrades',
-                    'updated_at'],
-        'data': [
-            ['shares', 'Рынок акций', 'stock', '2024 - 08 - 08', 'YDEX', 20, 5, 132682,
-             '2024-08-09 00:08:05'],
-            ['ndm', 'Режим переговорных сделок', 'stock', '2024 - 08 - 08', 'YDEX', 238948.0, 62, 2,
-             '2024 - 08 - 09 00: 08: 05'],
-            ['ccp', 'РЕПО с ЦК', 'stock', '2024-08-08', 'YDEX', 6716392432.71, 1785300, 8462, '2024-08-09 00:08: 05'],
-            ['repo', 'Рынок сделок РЕПО', 'stock', '2024-08-08', 'YDEX', 6716392432.71, 1785300, 8462,
-             '2024-08-09 00:08: 05']]},
-        'agregates.dates': {'metadata': {'from': {'type': 'date', 'bytes': 30, 'max_size': 0},
-                                         'till': {'type': 'date', 'bytes': 30, 'max_size': 0}},
-                            'columns': ['from', 'till'], 'data': [['2024 - 05 - 14', '2024 - 08 - 09']]}}
+    response = {
+        "aggregates": {
+            "metadata": {
+                "market_name": {"type": "string", "bytes": 45, "max_size": 0},
+                "market_title": {"type": "string", "bytes": 765, "max_size": 0},
+                "engine": {"type": "string", "bytes": 45, "max_size": 0},
+                "tradedate": {"type": "date", "bytes": 10, "max_size": 0},
+                "secid": {"type": "string", "bytes": 36, "max_size": 0},
+                "value": {"type": "double"},
+                "volume": {"type": "int64"},
+                "numtrades": {"type": "int64"},
+                "updated_at": {"type": "datetime", "bytes": 19, "max_size": 0},
+            },
+            "columns": [
+                "market_name",
+                "market_title",
+                "engine",
+                "tradedate",
+                "secid",
+                "value",
+                "volume",
+                "numtrades",
+                "updated_at",
+            ],
+            "data": [
+                ["shares", "Рынок акций", "stock", "2024 - 08 - 08", "YDEX", 20, 5, 132682, "2024-08-09 00:08:05"],
+                [
+                    "ndm",
+                    "Режим переговорных сделок",
+                    "stock",
+                    "2024 - 08 - 08",
+                    "YDEX",
+                    238948.0,
+                    62,
+                    2,
+                    "2024 - 08 - 09 00: 08: 05",
+                ],
+                [
+                    "ccp",
+                    "РЕПО с ЦК",
+                    "stock",
+                    "2024-08-08",
+                    "YDEX",
+                    6716392432.71,
+                    1785300,
+                    8462,
+                    "2024-08-09 00:08: 05",
+                ],
+                [
+                    "repo",
+                    "Рынок сделок РЕПО",
+                    "stock",
+                    "2024-08-08",
+                    "YDEX",
+                    6716392432.71,
+                    1785300,
+                    8462,
+                    "2024-08-09 00:08: 05",
+                ],
+            ],
+        },
+        "agregates.dates": {
+            "metadata": {
+                "from": {"type": "date", "bytes": 30, "max_size": 0},
+                "till": {"type": "date", "bytes": 30, "max_size": 0},
+            },
+            "columns": ["from", "till"],
+            "data": [["2024 - 05 - 14", "2024 - 08 - 09"]],
+        },
+    }
+    return response
+
+
+@pytest.fixture()
+def operation_list():
+    op_list = [
+        {"Дата операции": "2018-02-01", "Сумма операции": 90},
+        {"Дата операции": "2019-01-01", "Сумма операции": 55},
+        {"Дата операции": "2018-02-12", "Сумма операции": 45},
+        {"Дата операции": "2019-01-12", "Сумма операции": 41},
+    ]
+    return op_list
+
+
+@pytest.fixture()
+def transactions_df():
+    df = pd.DataFrame(
+        {
+            "Дата платежа": ["01.08.2024", "19.07.2024", "20.06.2024", "31.12.2019", "31.12.2018"],
+            "Сумма операции": ["-160.89", "-64.0", "-4575.45", "-17000.0", "-5.05"],
+            "Категория": ["Супермаркеты", "Супермаркеты", "Фастфуд", "Супермаркеты", "Переводы"],
+        }
+    )
+    return df
+
+
+@pytest.fixture()
+def transactions_df_test():
+    df = pd.DataFrame(
+        {
+            "Дата платежа": ["01.08.2024", "19.07.2024", "20.06.2024", "31.12.2019", "31.12.2018"],
+            "Сумма операции": ["-160.89", "-64.0", "-4575.45", "-17000.0", "-5.05"],
+            "Категория": ["Супермаркеты", "Супермаркеты", "Фастфуд", "Ж/Д билеты", "Переводы"],
+        }
+    )
+    return df
+
+
+@pytest.fixture()
+def transactions_df_test_1():
+    df = pd.DataFrame(
+        {
+            "Дата операции": [
+                "01.08.2024 18:00:00",
+                "19.07.2024 05:00:00",
+                "20.06.2024 16:00:00",
+                "31.12.2019 07:00:00",
+                "31.12.2018 08:00:00",
+            ],
+            "Сумма операции": ["-160.89", "-64.0", "-4575.45", "-17000.0", "-5.05"],
+            "Категория": ["Супермаркеты", "Супермаркеты", "Фастфуд", "Ж/Д билеты", "Переводы"],
+        }
+    )
+    return df
+
+
+@pytest.fixture()
+def json_response():
+    response = json.dumps(
+        {
+            "greeting": "Доброй ночи",
+            "cards": [{"last digits": "*7777", "total_spent": 88888.01, "cashback": 88.88}],
+            "top_transactions": [
+                {
+                    "date": "2024.05.02 05:02:00",
+                    "amount": 17000,
+                    "category": "Супермаркеты",
+                    "description": "Выброшенные на ветер деньги",
+                }
+            ],
+            "currency_rates": [{"currency": "USD", "price": 22}],
+            "stock_prices": [{"stock": "MOEX", "price": 111.11}],
+        },
+        ensure_ascii=False,
+    )
     return response

@@ -1,8 +1,16 @@
-import os
+import datetime
 
-PATH_TO_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "operations.xlsx")
+from src.services import investment_bank
+from src.views import main_page
 
 
-def main(user_date: str):
+def main():
+    """Main function."""
 
-    pass
+    date_obj = datetime.datetime.now() - datetime.timedelta(days=365 * 4)
+    today = date_obj.strftime("%d.%m.%Y %H:%M:%S")
+    main_page(today)
+
+
+if __name__ == "__main__":
+    main()
